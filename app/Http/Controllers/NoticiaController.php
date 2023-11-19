@@ -26,15 +26,19 @@ class NoticiaController extends Controller
         $noticias = [];
        
         //verificar se existe um determinado valor
-        if (Cache::has('dez_primeiras_noticias')){
-            $noticias = Cache::get('dez_primeiras_noticias');
-        } else {
-            
-    $noticias = Noticia::orderByDesc('created_at')->limit(10)->get();
-    Cache::put('dez_primeiras_noticias',$noticias,15);
-        }
+    //     if (Cache::has('dez_primeiras_noticias')){
+    //         $noticias = Cache::get('dez_primeiras_noticias');
+    //     } else {
+
+    // $noticias = Noticia::orderByDesc('created_at')->limit(10)->get();
+    // Cache::put('dez_primeiras_noticias',$noticias,15);
+    //     }
         
-        
+        //verificar se a chave existe retorna a informação de cache,caso não exista, vai criar a chave no período de tempo e vai usar o retorno usado
+        //eliminar  o bloco de código anterior
+        $noticias = Cache::remember('dez_primeiras_noticias',15, function(){
+            return Noticia::orderByDesc('created_at')->limit(10)->get();
+        });
         
         return view('noticia',['noticias'=> $noticias]);
     }
